@@ -1,7 +1,10 @@
 ## FFmpeg + Cam + SG90  
 
 
+### OS Download
 
+ *  Raspbian Buster Lite
+ *  Class 10 32GB内存卡
 
 
 ### Debian 
