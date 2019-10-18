@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        button {
+            height: 30px;
+            border-radius: 3px;
+        }
+    </style>
+    <link href="https://unpkg.com/video.js/dist/video-js.css" rel="stylesheet">
+    <script src="https://unpkg.com/video.js/dist/video.js"></script>
+    <script src="https://unpkg.com/videojs-contrib-hls/dist/videojs-contrib-hls.js"></script>
+    <script>
+
+        var funcs = {
+            ud_default: 100,
+            lr_default: 100,
+            mousedownID: -1,
+            init: function () {
+                document.getElementById("up").addEventListener("mousedown", function () {
+                    if (funcs.mousedownID == -1)  //Prevent multimple loops!
+                        funcs.mousedownID = setInterval(funcs.ud_up, 100 /*execute every 100ms*/);
+                });
+                document.getElementById("up").addEventListener("mouseup", function () {
+                    if (funcs.mousedownID != -1) {  //Only stop if exists
+                        clearInterval(funcs.mousedownID);
+                        funcs.mousedownID = -1;
+                    }
+                });
+                // --------------------
+                document.getElementById("down").addEventListener("mousedown", function () {
+                    if (funcs.mousedownID == -1)  //Prevent multimple loops!
+                        funcs.mousedownID = setInterval(funcs.ud_down, 100 /*execute every 100ms*/);
+                });
+                document.getElementById("down").addEventListener("mouseup", function () {
+                    if (funcs.mousedownID != -1) {  //Only stop if exists
+                        clearInterval(funcs.mousedownID);
+                        funcs.mousedownID = -1;
+                    }
+                });
+                // --------------------
+                document.getElementById("left").addEventListener("mousedown", function () {
+                    if (funcs.mousedownID == -1)  //Prevent multimple loops!
+                        funcs.mousedownID = setInterval(funcs.lr_l, 100 /*execute every 100ms*/);
+                });
+                document.getElementById("left").addEventListener("mouseup", function () {
+                    if (funcs.mousedownID != -1) {  //Only stop if exists
+                        clearInterval(funcs.mousedownID);
+                        funcs.mousedownID = -1;
+                    }
+                });
+                // --------------------
+                document.getElementById("right").addEventListener("mousedown", function () {
+                    if (funcs.mousedownID == -1)  //Prevent multimple loops!
+                        funcs.mousedownID = setInterval(funcs.lr_r, 100 /*execute every 100ms*/);
+                });
+                document.getElementById("right").addEventListener("mouseup", function () {
+                    if (funcs.mousedownID != -1) {  //Only stop if exists
+                        clearInterval(funcs.mousedownID);
+                        funcs.mousedownID = -1;
+                    }
+                });
+
+            },
+            ud_up: function () {
+                funcs.send('ud', funcs.ud_default, function (result) {
+                    funcs.ud_default = parseInt(result) - 10;
+                    console.log(funcs.ud_default)
+                })
+            },
+            ud_down: function () {
+                funcs.send('ud', funcs.ud_default, function (result) {
+                    funcs.ud_default = parseInt(result) + 10;
+                    console.log(funcs.ud_default)
+                })
+            },
+            lr_l: function () {
+                funcs.send('lr', funcs.lr_default, function (result) {
+                    funcs.lr_default = parseInt(result) + 10;
+                    console.log(funcs.lr_default)
+                })
+            },
+            lr_r: function () {
+                funcs.send('lr', funcs.lr_default, function (result) {
+                    funcs.lr_default = parseInt(result) - 10;
+                    console.log(funcs.lr_default)
+                })
+            },
+
+
+            send: function (xy, arg, call) {
+                //构造表单数据
+                var xhr = new XMLHttpRequest();
+                xhr.timeout = 3000;
+                xhr.responseType = "text";
+                //创建一个 post 请求，采用异步
+                xhr.open('get', `http://192.168.2.148:5000/${xy}/${arg}`);
+                xhr.send();
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState === 4 && xhr.status === 200) {
+                        call(xhr.responseText)
+                    }
+                }
+            }
+        }
+    </script>
+
+</head>
+<body onload="funcs.init()">
+
+
+<button id="up" value="20">up</button>
+<button id="down" value="20">down</button>
+<button id="right" value="20">right</button>
+<button id="left" value="20">left</button>
+
+<html>
+<head>
+    <title>HTTP Live Streaming</title>
+</head>
+<body>
+<video id="my_video_1" class="video-js vjs-default-skin" controls preload="auto" width="640" height="268"
+  data-setup='{}'>
+    <source src="http://47.93.244.59:8080/live/aaa.m3u8" type="application/x-mpegURL">
+ </video>
+
+</body>
+</html>
+
+</body>
+</html>
